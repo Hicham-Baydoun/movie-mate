@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MovieMate – Group Documentation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0F172A;
+      --surface:  #1E293B;
+      --surface2: #263348;
+      --m1:       #3B82F6;   /* Member 1 — blue  */
+      --m1-dim:   #1D4ED8;
+      --m1-soft:  #BFDBFE;
+      --m2:       #22C55E;   /* Member 2 — green */
+      --m2-dim:   #15803D;
+      --m2-soft:  #BBF7D0;
+      --m3:       #A78BFA;   /* Member 3 — purple */
+      --m3-dim:   #5B21B6;
+      --m3-soft:  #DDD6FE;
+      --yellow:   #FBBF24;
+      --red:      #EF4444;
+      --text:     #F8FAFC;
+      --muted:    #94A3B8;
+      --border:   #334155;
+      --code-bg:  #0D1526;
+      --radius:   10px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+
+    /* ── Sidebar ── */
+    #sidebar { position: fixed; top: 0; left: 0; width: 258px; height: 100vh; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; overflow-x: hidden; padding: 20px 0; z-index: 100; }
+    #sidebar .logo { text-align: center; padding: 0 16px 18px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+    #sidebar .logo h1 { font-size: 1.25rem; letter-spacing: 1px; }
+    #sidebar .logo span { font-size: 0.7rem; color: var(--muted); }
+    #sidebar nav a { display: block; padding: 6px 20px; color: var(--muted); text-decoration: none; font-size: 0.8rem; border-left: 3px solid transparent; transition: all .18s; }
+    #sidebar nav a:hover { color: var(--text); background: var(--surface2); }
+    .nav-group { margin-bottom: 4px; }
+    .nav-group-header { display: flex; align-items: center; gap: 8px; padding: 12px 20px 4px; font-size: 0.67rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .nav-group-header .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .nav-group.m1 .nav-group-header { color: var(--m1); }
+    .nav-group.m2 .nav-group-header { color: var(--m2); }
+    .nav-group.m3 .nav-group-header { color: var(--m3); }
+    .nav-group.m1 .dot { background: var(--m1); }
+    .nav-group.m2 .dot { background: var(--m2); }
+    .nav-group.m3 .dot { background: var(--m3); }
+    .nav-group.m1 nav a.active, .nav-group.m1 nav a:hover { border-left-color: var(--m1); color: var(--m1-soft); }
+    .nav-group.m2 nav a.active, .nav-group.m2 nav a:hover { border-left-color: var(--m2); color: var(--m2-soft); }
+    .nav-group.m3 nav a.active, .nav-group.m3 nav a:hover { border-left-color: var(--m3); color: var(--m3-soft); }
+
+    /* ── Main ── */
+    #main { margin-left: 258px; padding: 48px 52px; max-width: 1180px; }
+
+    /* ── Typography ── */
+    h1.page-title { font-size: 2.4rem; font-weight: 800; margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    h2 { font-size: 1.45rem; font-weight: 700; color: var(--text); border-bottom: 2px solid var(--border); padding-bottom: 10px; margin: 46px 0 20px; }
+    h2 .snum { color: #fff; border-radius: 6px; padding: 2px 9px; font-size: 0.75rem; margin-right: 8px; vertical-align: middle; }
+    h3 { font-size: 1.1rem; font-weight: 700; color: var(--muted); margin: 26px 0 10px; }
+    h4 { font-size: 0.92rem; font-weight: 600; color: var(--yellow); margin: 16px 0 6px; }
+    p { margin-bottom: 12px; color: #CBD5E1; }
+    ul, ol { padding-left: 22px; color: #CBD5E1; margin-bottom: 12px; }
+    li { margin-bottom: 5px; }
+    strong { color: var(--text); }
+    a { color: #60A5FA; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Member banner ── */
+    .member-banner {
+      border-radius: 14px; padding: 30px 36px; margin: 52px 0 32px;
+      display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+    }
+    .member-banner.m1 { background: linear-gradient(135deg, #1e3a6e 0%, #0F172A 100%); border: 2px solid var(--m1); }
+    .member-banner.m2 { background: linear-gradient(135deg, #052e16 0%, #0F172A 100%); border: 2px solid var(--m2); }
+    .member-banner.m3 { background: linear-gradient(135deg, #2e1065 0%, #0F172A 100%); border: 2px solid var(--m3); }
+    .member-avatar {
+      width: 68px; height: 68px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; font-weight: 800; flex-shrink: 0;
+    }
+    .m1 .member-avatar { background: var(--m1-dim); color: var(--m1-soft); }
+    .m2 .member-avatar { background: var(--m2-dim); color: var(--m2-soft); }
+    .m3 .member-avatar { background: var(--m3-dim); color: var(--m3-soft); }
+    .member-info h2 { border: none; margin: 0 0 4px; padding: 0; font-size: 1.4rem; }
+    .m1 .member-info h2 { color: var(--m1); }
+    .m2 .member-info h2 { color: var(--m2); }
+    .m3 .member-info h2 { color: var(--m3); }
+    .member-info p { margin: 0; font-size: 0.88rem; color: var(--muted); }
+    .member-covers { margin-left: auto; display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+    .member-covers span { font-size: 0.76rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+    .m1 .member-covers span { background: var(--m1-dim); color: var(--m1-soft); }
+    .m2 .member-covers span { background: var(--m2-dim); color: var(--m2-soft); }
+    .m3 .member-covers span { background: var(--m3-dim); color: var(--m3-soft); }
+
+    /* Section number colour per member */
+    .snum.c1 { background: var(--m1); }
+    .snum.c2 { background: var(--m2); }
+    .snum.c3 { background: var(--m3); }
+
+    /* ── Code ── */
+    code { background: var(--code-bg); color: #93C5FD; padding: 2px 7px; border-radius: 5px; font-family: 'Cascadia Code','Fira Code',Consolas,monospace; font-size: 0.82rem; }
+    pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; overflow-x: auto; margin: 14px 0; }
+    pre code { background: none; padding: 0; font-size: 0.82rem; color: #E2E8F0; }
+
+    /* ── Cards ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 16px; }
+    .card.hi  { border-left: 4px solid var(--m1); }
+    .card.ok  { border-left: 4px solid var(--m2); }
+    .card.warn { border-left: 4px solid var(--yellow); }
+    .card.bad  { border-left: 4px solid var(--red); }
+
+    /* ── Badges ── */
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin: 2px; }
+    .b-blue   { background: #1D4ED8; color: #BFDBFE; }
+    .b-green  { background: #15803D; color: #BBF7D0; }
+    .b-yellow { background: #92400E; color: #FDE68A; }
+    .b-purple { background: #5B21B6; color: #DDD6FE; }
+    .b-red    { background: #991B1B; color: #FECACA; }
+    .b-gray   { background: #374151; color: #D1D5DB; }
+
+    /* ── Tables ── */
+    .tbl-wrap { overflow-x: auto; margin: 14px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    thead tr { background: var(--surface2); }
+    th { text-align: left; padding: 9px 13px; color: var(--muted); font-weight: 600; font-size: 0.73rem; text-transform: uppercase; letter-spacing: .6px; border-bottom: 1px solid var(--border); }
+    td { padding: 8px 13px; border-bottom: 1px solid var(--border); color: #CBD5E1; vertical-align: top; }
+    tr:hover td { background: var(--surface2); }
+
+    /* ── Method block ── */
+    .method { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 13px; overflow: hidden; }
+    .method-header { background: var(--surface2); padding: 9px 17px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .method-name { font-family: monospace; font-size: 0.9rem; color: var(--yellow); font-weight: 700; }
+    .method-sig  { font-family: monospace; font-size: 0.76rem; color: var(--muted); }
+    .method-body { padding: 13px 17px; }
+    .method-body p { margin-bottom: 8px; }
+
+    /* ── Endpoint ── */
+    .endpoint { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 17px; margin-bottom: 11px; }
+    .endpoint-top { display: flex; gap: 11px; align-items: center; margin-bottom: 7px; flex-wrap: wrap; }
+    .mtag { padding: 3px 9px; border-radius: 5px; font-size: 0.71rem; font-weight: 700; font-family: monospace; }
+    .GET  { background: #14532D; color: #86EFAC; }
+    .POST { background: #1D4ED8; color: #BFDBFE; }
+    .eurl { font-family: monospace; font-size: 0.86rem; color: var(--text); }
+
+    /* ── Flow ── */
+    .flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0; }
+    .fbox { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 0.8rem; font-weight: 600; text-align: center; }
+    .fbox.b { border-color: var(--m1); color: var(--m1); }
+    .fbox.g { border-color: var(--m2); color: var(--m2); }
+    .farr { color: var(--muted); }
+
+    /* ── Rank grid ── */
+    .rank-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; margin: 12px 0; }
+    .rank-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
+    .rank-card .ri { font-size: 1.8rem; }
+    .rank-card .rn { font-weight: 700; margin: 5px 0 2px; }
+    .rank-card .rq { font-size: 0.73rem; color: var(--muted); }
+
+    /* ── Cover team grid ── */
+    .team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin: 28px 0; }
+    .team-card { border-radius: 12px; padding: 24px 20px; text-align: center; }
+    .team-card.m1 { background: linear-gradient(160deg,#1e3a6e,#0F172A); border: 1px solid var(--m1); }
+    .team-card.m2 { background: linear-gradient(160deg,#052e16,#0F172A); border: 1px solid var(--m2); }
+    .team-card.m3 { background: linear-gradient(160deg,#2e1065,#0F172A); border: 1px solid var(--m3); }
+    .team-card .tc-av { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; }
+    .m1 .tc-av { background: var(--m1-dim); color: var(--m1-soft); }
+    .m2 .tc-av { background: var(--m2-dim); color: var(--m2-soft); }
+    .m3 .tc-av { background: var(--m3-dim); color: var(--m3-soft); }
+    .team-card .tc-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .m1 .tc-name { color: var(--m1); }
+    .m2 .tc-name { color: var(--m2); }
+    .m3 .tc-name { color: var(--m3); }
+    .team-card .tc-role { font-size: 0.76rem; color: var(--muted); margin-bottom: 14px; }
+    .team-card .tc-items { display: flex; flex-direction: column; gap: 5px; }
+    .team-card .tc-items span { font-size: 0.73rem; padding: 3px 8px; border-radius: 6px; }
+    .m1 .tc-items span { background: #1e3a6e; color: var(--m1-soft); }
+    .m2 .tc-items span { background: #064e3b; color: var(--m2-soft); }
+    .m3 .tc-items span { background: #2e1065; color: var(--m3-soft); }
+
+    /* ── Divider ── */
+    hr.div { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+    /* ── Hero stats ── */
+    .hstats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .hs { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 85px; }
+    .hs .v { font-size: 1.55rem; font-weight: 800; color: var(--m1); }
+    .hs .l { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+
+    @media (max-width: 860px) { #sidebar { display: none; } #main { margin-left: 0; padding: 22px 16px; } .team-grid { grid-template-columns: 1fr; } }
+    @media print { #sidebar { display: none; } #main { margin-left: 0; } }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside id="sidebar">
+  <div class="logo">
+    <h1 style="color:var(--m1);">🎬 MovieMate</h1>
+    <span>Group Documentation</span>
+  </div>
+
+  <div class="nav-group m1">
+    <div class="nav-group-header"><span class="dot"></span>Member 1 — Foundation</div>
+    <nav>
+      <a href="#cover">Team Overview</a>
+      <a href="#overview">Project Overview</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#structure">Project Structure</a>
+      <a href="#splash">SplashActivity</a>
+      <a href="#login">LoginActivity</a>
+      <a href="#signup">SignUpActivity</a>
+      <a href="#changepass">ChangePasswordActivity</a>
+    </nav>
+  </div>
+
+  <div class="nav-group m2">
+    <div class="nav-group-header"><span class="dot"></span>Member 2 — Core Screens</div>
+    <nav>
+      <a href="#main">MainActivity</a>
+      <a href="#home">HomeActivity</a>
+      <a href="#historylist">WatchHistoryListActivity</a>
+      <a href="#rate">RateMovieActivity</a>
+      <a href="#legacyact">WatchHistoryActivity</a>
+      <a href="#movieitem">MovieItem</a>
+      <a href="#historyitem">MovieHistoryItem</a>
+    </nav>
+  </div>
+
+  <div class="nav-group m3">
+    <div class="nav-group-header"><span class="dot"></span>Member 3 — Data &amp; Network</div>
+    <nav>
+      <a href="#movieadapter">MovieAdapter</a>
+      <a href="#historyadapter">WatchHistoryAdapter</a>
+      <a href="#volley">VolleySingleton</a>
+      <a href="#layouts">Layout Files</a>
+      <a href="#api">API Endpoints</a>
+      <a href="#colors">Colors &amp; Theme</a>
+      <a href="#userflow">User Journey</a>
+      <a href="#session">Session Management</a>
+      <a href="#issues">Known Issues</a>
+      <a href="#deps">Dependencies</a>
+    </nav>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main id="main">
+
+<!-- ══════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════ -->
+<section id="cover">
+  <h1 class="page-title" style="background:linear-gradient(135deg,var(--m1),var(--m3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">MovieMate</h1>
+  <p class="subtitle">Android Group Project — Comprehensive Code Documentation</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+    <span class="badge b-blue">Android</span>
+    <span class="badge b-blue">Java</span>
+    <span class="badge b-green">MinSDK 24</span>
+    <span class="badge b-green">TargetSDK 36</span>
+    <span class="badge b-purple">Volley</span>
+    <span class="badge b-purple">Glide</span>
+    <span class="badge b-yellow">PHP Backend</span>
+  </div>
+
+  <div class="hstats">
+    <div class="hs"><div class="v">9</div><div class="l">Activities</div></div>
+    <div class="hs"><div class="v">2</div><div class="l">Models</div></div>
+    <div class="hs"><div class="v">2</div><div class="l">Adapters</div></div>
+    <div class="hs"><div class="v">8</div><div class="l">API Endpoints</div></div>
+    <div class="hs"><div class="v">11</div><div class="l">Layouts</div></div>
+    <div class="hs"><div class="v">3</div><div class="l">Members</div></div>
+  </div>
+
+  <h3 style="margin-top:36px;color:var(--text);">Group Members &amp; Responsibilities</h3>
+  <div class="team-grid">
+    <div class="team-card m1">
+      <div class="tc-av">1</div>
+      <div class="tc-name">Member 1</div>
+      <div class="tc-role">Foundation &amp; Authentication</div>
+      <div class="tc-items">
+        <span>Project Overview &amp; Architecture</span>
+        <span>Project Structure</span>
+        <span>SplashActivity</span>
+        <span>LoginActivity</span>
+        <span>SignUpActivity</span>
+        <span>ChangePasswordActivity</span>
+      </div>
+    </div>
+    <div class="team-card m2">
+      <div class="tc-av">2</div>
+      <div class="tc-name">Member 2</div>
+      <div class="tc-role">Core Screens &amp; Data Models</div>
+      <div class="tc-items">
+        <span>MainActivity</span>
+        <span>HomeActivity</span>
+        <span>WatchHistoryListActivity</span>
+        <span>RateMovieActivity</span>
+        <span>WatchHistoryActivity (Legacy)</span>
+        <span>MovieItem &amp; MovieHistoryItem</span>
+      </div>
+    </div>
+    <div class="team-card m3">
+      <div class="tc-av">3</div>
+      <div class="tc-name">Member 3</div>
+      <div class="tc-role">Adapters, Network &amp; Reference</div>
+      <div class="tc-items">
+        <span>MovieAdapter</span>
+        <span>WatchHistoryAdapter</span>
+        <span>VolleySingleton</span>
+        <span>Layouts, API &amp; Colors</span>
+        <span>User Journey &amp; Session</span>
+        <span>Known Issues &amp; Dependencies</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     MEMBER 1
+══════════════════════════════════════ -->
+<div class="member-banner m1" id="m1-banner">
+  <div class="member-avatar">1</div>
+  <div class="member-info">
+    <h2>Member 1</h2>
+    <p>Foundation &amp; Authentication — Project structure, architecture, and all auth-related screens</p>
+  </div>
+  <div class="member-covers">
+    <span>Sections 01 – 07</span>
+    <span>4 Activities</span>
+    <span>Architecture &amp; Structure</span>
+  </div>
+</div>
+
+<!-- 01 Overview -->
+<section id="overview">
+  <h2><span class="snum c1">01</span> Project Overview</h2>
+  <p><strong>MovieMate</strong> is a native Android application for personal movie tracking. Users register an account, log in, browse a movie catalog shown as a scrollable grid, mark movies as watched, rate them, view their complete watch history, and check personal statistics that include total watch time and a viewer rank.</p>
+  <div class="card hi">
+    <strong>Backend:</strong> PHP REST API running on a local XAMPP server at <code>http://10.0.2.2/MovieMateAPI/</code>. The address <code>10.0.2.2</code> is the Android Emulator's alias for the host machine's localhost. All traffic is currently HTTP (not HTTPS) — suitable for development only.
+  </div>
+</section>
+
+<!-- 02 Architecture -->
+<section id="architecture">
+  <h2><span class="snum c1">02</span> Architecture Pattern</h2>
+  <p>MovieMate uses lightweight <strong>MVC (Model-View-Controller)</strong>, the most common pattern in Android Java development.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>What it is</th><th>Files</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge b-blue">Model</span></td><td>Plain Java objects that hold data</td><td><code>MovieItem.java</code>, <code>MovieHistoryItem.java</code></td></tr>
+        <tr><td><span class="badge b-green">View</span></td><td>XML layout files — visual structure only, zero logic</td><td>All <code>res/layout/*.xml</code></td></tr>
+        <tr><td><span class="badge b-purple">Controller</span></td><td>Activities handle events and coordinate data flow</td><td>All <code>*Activity.java</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4>Supporting Design Patterns</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Pattern</th><th>Class</th><th>Why it's used</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Singleton</strong></td><td><code>VolleySingleton</code></td><td>Single shared HTTP request queue — avoids memory/thread waste</td></tr>
+        <tr><td><strong>Adapter</strong></td><td><code>MovieAdapter</code>, <code>WatchHistoryAdapter</code></td><td>Bridge between data lists and RecyclerView display</td></tr>
+        <tr><td><strong>ViewHolder</strong></td><td>Inner classes inside each Adapter</td><td>Cache View references to avoid expensive repeated <code>findViewById</code> calls</td></tr>
+        <tr><td><strong>Observer (implicit)</strong></td><td>RecyclerView <code>notifyDataSetChanged()</code></td><td>UI re-renders automatically when the backing data list changes</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 03 Structure -->
+<section id="structure">
+  <h2><span class="snum c1">03</span> Project Structure</h2>
+  <pre><code>MovieMate/
+├── app/src/main/
+│   ├── java/com/example/moviemate/
+│   │   ├── SplashActivity.java          ← launch screen (5 sec delay)
+│   │   ├── LoginActivity.java            ← user login
+│   │   ├── SignUpActivity.java           ← new account registration
+│   │   ├── MainActivity.java             ← movies grid (Movies tab)
+│   │   ├── HomeActivity.java             ← stats dashboard (Home tab)
+│   │   ├── WatchHistoryListActivity.java ← history list (History tab)
+│   │   ├── WatchHistoryActivity.java     ← (legacy / unused)
+│   │   ├── RateMovieActivity.java        ← rate a watched movie
+│   │   ├── ChangePasswordActivity.java   ← change password
+│   │   ├── MovieItem.java                ← movie data model
+│   │   ├── MovieHistoryItem.java         ← watch history data model
+│   │   ├── MovieAdapter.java             ← RecyclerView adapter for grid
+│   │   ├── WatchHistoryAdapter.java      ← RecyclerView adapter for list
+│   │   └── VolleySingleton.java          ← shared HTTP request queue
+│   └── res/
+│       ├── layout/   ← 11 XML layout files
+│       ├── values/   ← colors.xml, strings.xml, themes.xml
+│       ├── drawable/ ← icons, backgrounds, logos, movie posters
+│       ├── menu/     ← bottom_nav_menu.xml
+│       └── xml/      ← network_security_config.xml
+└── build.gradle.kts  ← app build config (Kotlin DSL)</code></pre>
+</section>
+
+<!-- 04 Splash -->
+<section id="splash">
+  <h2><span class="snum c1">04</span> SplashActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>SplashActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_splash.xml</code><br/>
+    <strong>Purpose:</strong> Branding screen shown for 5 seconds on app launch, then automatically redirects to Login. Contains the app logo and a progress bar.
+  </div>
+  <div class="method">
+    <div class="method-header">
+      <span class="method-name">onCreate</span>
+      <span class="method-sig">(Bundle savedInstanceState)</span>
+      <span class="badge b-blue">Lifecycle</span>
+    </div>
+    <div class="method-body">
+      <p>Sets the content view to <code>activity_splash.xml</code>. Uses a <code>Handler</code> to post a delayed <code>Runnable</code> that fires after <strong>5000 ms</strong> (5 seconds). When the delay fires it creates an <code>Intent</code> targeting <code>LoginActivity</code>, calls <code>startActivity()</code>, then <code>finish()</code> — preventing the user from pressing Back to return to the splash screen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 05 Login -->
+<section id="login">
+  <h2><span class="snum c1">05</span> LoginActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>LoginActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_login.xml</code><br/>
+    <strong>Purpose:</strong> Authenticates an existing user against the server and stores the session locally.
+  </div>
+  <h4>UI Components</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>usernameInput</code></td><td>EditText</td><td>User types their username</td></tr>
+        <tr><td><code>passwordInput</code></td><td>EditText</td><td>User types their password</td></tr>
+        <tr><td><code>loginButton</code></td><td>Button</td><td>Submits the login form</td></tr>
+        <tr><td><code>signupButton</code></td><td>TextView</td><td>Link that navigates to SignUpActivity</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header">
+      <span class="method-name">onCreate</span>
+      <span class="method-sig">(Bundle savedInstanceState)</span>
+    </div>
+    <div class="method-body">
+      <p>Inflates the layout and binds all UI views. Sets click listeners on the login button and signup link.</p>
+      <p><strong>Login button click — step by step:</strong></p>
+      <ol>
+        <li>Reads username and password strings from the EditTexts.</li>
+        <li>Validates neither field is empty — shows a Toast if validation fails, stops here.</li>
+        <li>Builds a Volley <code>StringRequest</code> (HTTP POST) to <code>login_user.php</code> with params <code>username</code> and <code>password</code>.</li>
+        <li>On server success: parses JSON response, extracts <code>user_id</code>, saves both <code>username</code> and <code>user_id</code> into <code>SharedPreferences</code> under key <code>"MovieMatePrefs"</code>.</li>
+        <li>Navigates to <code>MainActivity</code> and calls <code>finish()</code> so the user cannot go back to Login.</li>
+        <li>On error: shows Toast with the server error message.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="card ok">
+    <strong>Session storage (SharedPreferences key "MovieMatePrefs"):</strong><br/>
+    <code>"username"</code> → logged-in username &nbsp;|&nbsp; <code>"user_id"</code> → integer user ID from database
+  </div>
+</section>
+
+<!-- 06 Signup -->
+<section id="signup">
+  <h2><span class="snum c1">06</span> SignUpActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>SignUpActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_sign_up.xml</code><br/>
+    <strong>Purpose:</strong> Registers a new user account on the server.
+  </div>
+  <h4>UI Components</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>signupUsername</code></td><td>EditText</td><td>Desired username</td></tr>
+        <tr><td><code>signupPassword</code></td><td>EditText</td><td>Desired password</td></tr>
+        <tr><td><code>signupSubmit</code></td><td>Button</td><td>Submits registration form</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header">
+      <span class="method-name">onCreate</span>
+      <span class="method-sig">(Bundle savedInstanceState)</span>
+    </div>
+    <div class="method-body">
+      <p>Binds views and sets click listener on <code>signupSubmit</code>. On click: validates both fields are non-empty, then HTTP POST to <code>register_user.php</code> with <code>username</code> and <code>password</code>. Parses JSON response for <code>status</code> and <code>message</code>. On success shows confirmation Toast and navigates to <code>LoginActivity</code>. On failure shows error Toast.</p>
+      <p><span class="badge b-yellow">Note</span> This activity creates its own <code>RequestQueue</code> directly rather than using <code>VolleySingleton</code> — inconsistent with the rest of the app.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 ChangePassword -->
+<section id="changepass">
+  <h2><span class="snum c1">07</span> ChangePasswordActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>ChangePasswordActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_change_password.xml</code><br/>
+    <strong>Purpose:</strong> Allows a logged-in user to change their account password by verifying the current one first. Launched from the profile popup menu.
+  </div>
+  <h4>UI Components</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>oldPassword</code></td><td>EditText</td><td>Current password (for server-side verification)</td></tr>
+        <tr><td><code>newPassword</code></td><td>EditText</td><td>New password to set</td></tr>
+        <tr><td><code>updatePasswordBtn</code></td><td>Button</td><td>Submits the change</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header">
+      <span class="method-name">onCreate</span>
+      <span class="method-sig">(Bundle savedInstanceState)</span>
+    </div>
+    <div class="method-body">
+      <p>Reads <code>username</code> from Intent extras (passed by the profile popup in MainActivity / HomeActivity). On button click: validates both fields non-empty. HTTP POST to <code>change_password.php</code> with <code>username</code>, <code>old_password</code>, <code>new_password</code>. If the response string contains the word <code>"success"</code> shows a confirmation Toast and calls <code>finish()</code>. Otherwise shows the server error message.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     MEMBER 2
+══════════════════════════════════════ -->
+<div class="member-banner m2" id="m2-banner">
+  <div class="member-avatar">2</div>
+  <div class="member-info">
+    <h2>Member 2</h2>
+    <p>Core Screens &amp; Data Models — The three main tabs, rating, and the Java model classes</p>
+  </div>
+  <div class="member-covers">
+    <span>Sections 08 – 14</span>
+    <span>5 Activities</span>
+    <span>2 Data Models</span>
+  </div>
+</div>
+
+<!-- 08 MainActivity -->
+<section id="main">
+  <h2><span class="snum c2">08</span> MainActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>MainActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_main.xml</code><br/>
+    <strong>Purpose:</strong> The <strong>Movies tab</strong> — shows the full movie catalog as a 2-column scrollable grid. The central screen of the app.
+  </div>
+  <h4>UI Components</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>movieRecyclerView</code></td><td>RecyclerView</td><td>2-column grid of movie cards</td></tr>
+        <tr><td><code>welcomeTextView</code></td><td>TextView</td><td>Shows "Welcome, [username]"</td></tr>
+        <tr><td><code>profileIcon</code></td><td>ImageView</td><td>Tap to open the profile popup menu</td></tr>
+        <tr><td><code>bottomNavigation</code></td><td>BottomNavigationView</td><td>Home / Movies / History tab bar</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header">
+      <span class="method-name">onCreate</span>
+      <span class="method-sig">(Bundle savedInstanceState)</span>
+    </div>
+    <div class="method-body">
+      <p>Reads username from SharedPreferences and sets the welcome message. Configures the RecyclerView with a <code>GridLayoutManager</code> (2 columns) and attaches a <code>MovieAdapter</code>. Pre-selects the Movies tab in the bottom nav. Sets tab-change listeners: Home tab → <code>HomeActivity</code>, History tab → <code>WatchHistoryListActivity</code>. Calls <code>fetchMovies()</code>.</p>
+    </div>
+  </div>
+  <div class="method">
+    <div class="method-header">
+      <span class="method-name">fetchMovies</span>
+      <span class="method-sig">()</span>
+      <span class="badge b-blue">Network</span>
+    </div>
+    <div class="method-body">
+      <p>HTTP GET to <code>get_movies.php</code>. Receives a JSON array; each element has:</p>
+      <pre><code>{ "movie_id": 1, "title": "Inception", "duration_minutes": 148,
+  "genre": "Sci-Fi", "release_year": "2010", "image_url": "inception" }</code></pre>
+      <p>Builds a <code>List&lt;MovieItem&gt;</code> and calls <code>notifyDataSetChanged()</code> on the adapter to refresh the grid.</p>
+    </div>
+  </div>
+  <div class="method">
+    <div class="method-header">
+      <span class="method-name">showProfileMenu</span>
+      <span class="method-sig">(View anchor)</span>
+    </div>
+    <div class="method-body">
+      <p>Creates a <code>PopupMenu</code> anchored to the profile icon. Three options:</p>
+      <ul>
+        <li><strong>Username label</strong> — read-only display of who is logged in.</li>
+        <li><strong>Change Password</strong> — starts <code>ChangePasswordActivity</code>, passes username as Intent extra.</li>
+        <li><strong>Logout</strong> — clears all SharedPreferences, starts <code>LoginActivity</code> with <code>FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK</code> to wipe the entire back stack.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 09 HomeActivity -->
+<section id="home">
+  <h2><span class="snum c2">09</span> HomeActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>HomeActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_home.xml</code><br/>
+    <strong>Purpose:</strong> The <strong>Home tab</strong> — personal stats dashboard showing total watch time, movies watched count, and a viewer rank.
+  </div>
+  <h4>UI Components</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>welcomeTextView</code></td><td>TextView</td><td>"Welcome, [username]"</td></tr>
+        <tr><td><code>profileIcon</code></td><td>ImageView</td><td>Profile popup (same as MainActivity)</td></tr>
+        <tr><td><code>totalWatchTimeTextView</code></td><td>TextView</td><td>e.g. "5h 30m" of aggregated watch time</td></tr>
+        <tr><td><code>totalMoviesWatchedTextView</code></td><td>TextView</td><td>Count of movies marked as watched</td></tr>
+        <tr><td><code>rankTextView</code></td><td>TextView</td><td>Viewer rank title</td></tr>
+        <tr><td><code>bottomNavigation</code></td><td>BottomNavigationView</td><td>Tab nav (Home pre-selected)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onCreate</span><span class="method-sig">(Bundle savedInstanceState)</span></div>
+    <div class="method-body"><p>Loads username and user_id from SharedPreferences. Pre-selects the Home tab. Calls <code>fetchStats(userId)</code> if user_id is present.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onResume</span><span class="method-sig">()</span><span class="badge b-yellow">Lifecycle</span></div>
+    <div class="method-body"><p>Called every time this Activity returns to the foreground. Re-fetches stats so figures are always current (e.g., after the user marks a new movie as watched).</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">fetchStats</span><span class="method-sig">(String userId)</span><span class="badge b-blue">Network</span></div>
+    <div class="method-body">
+      <p>HTTP GET to <code>get_user_history.php?user_id=[userId]</code>. Iterates the JSON array to compute:</p>
+      <ul>
+        <li><code>totalMinutes</code> — sum of every entry's <code>duration_minutes</code>.</li>
+        <li><code>movieCount</code> — total number of history entries.</li>
+      </ul>
+      <p>Passes both values to <code>updateUI()</code>.</p>
+    </div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">updateUI</span><span class="method-sig">(long totalMinutes, int movieCount)</span></div>
+    <div class="method-body">
+      <p>Converts minutes to <code>Xh Ym</code> format. Updates all three stat TextViews. Assigns rank based on movie count:</p>
+      <div class="rank-grid">
+        <div class="rank-card"><div class="ri">🥉</div><div class="rn">Bronze</div><div class="rq">&lt; 5 movies</div></div>
+        <div class="rank-card"><div class="ri">🥈</div><div class="rn">Silver</div><div class="rq">5 – 9 movies</div></div>
+        <div class="rank-card"><div class="ri">🎬</div><div class="rn">Cinephile</div><div class="rq">10 – 19 movies</div></div>
+        <div class="rank-card"><div class="ri">🏆</div><div class="rn">Movie Buff</div><div class="rq">20+ movies</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 WatchHistoryListActivity -->
+<section id="historylist">
+  <h2><span class="snum c2">10</span> WatchHistoryListActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>WatchHistoryListActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_watch_history_list.xml</code><br/>
+    <strong>Purpose:</strong> The <strong>History tab</strong> — shows the user's complete watch history as a vertical scrollable list. Each card shows poster, title, watch date, rating, and a delete button.
+  </div>
+  <h4>UI Components</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>historyRecyclerView</code></td><td>RecyclerView</td><td>Vertical list of history item cards</td></tr>
+        <tr><td><code>welcomeTextView</code></td><td>TextView</td><td>"Welcome, [username]"</td></tr>
+        <tr><td><code>profileIcon</code></td><td>ImageView</td><td>Profile menu trigger</td></tr>
+        <tr><td><code>bottomNavigation</code></td><td>BottomNavigationView</td><td>Tab nav (History pre-selected)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onCreate</span><span class="method-sig">(Bundle savedInstanceState)</span></div>
+    <div class="method-body"><p>Loads credentials from SharedPreferences. Configures RecyclerView with <code>LinearLayoutManager</code> (vertical). Attaches a <code>WatchHistoryAdapter</code>. Pre-selects History tab. Calls <code>fetchHistory(userId)</code>.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onResume</span><span class="method-sig">()</span><span class="badge b-yellow">Lifecycle</span></div>
+    <div class="method-body"><p>Re-fetches history when the user returns (e.g., after rating a movie in RateMovieActivity) so the list is always up to date.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">fetchHistory</span><span class="method-sig">(String userId)</span><span class="badge b-blue">Network</span></div>
+    <div class="method-body">
+      <p>HTTP GET to <code>get_user_history.php?user_id=[userId]</code>. Each JSON item contains:</p>
+      <pre><code>{ "history_id": 5, "movie_id": 2, "title": "Inception",
+  "duration_minutes": 148, "genre": "Sci-Fi", "release_year": "2010",
+  "image_url": "inception", "rating": 9, "watch_date": "2025-03-10" }</code></pre>
+      <p>Builds <code>List&lt;MovieHistoryItem&gt;</code> and calls <code>notifyDataSetChanged()</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 RateMovieActivity -->
+<section id="rate">
+  <h2><span class="snum c2">11</span> RateMovieActivity</h2>
+  <div class="card">
+    <strong>File:</strong> <code>RateMovieActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_rate_movie.xml</code><br/>
+    <strong>Purpose:</strong> Lets the user enter a numeric rating (1–10) for a movie. Launched when they tap a card in the history list.
+  </div>
+  <h4>UI Components</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>ratingInput</code></td><td>EditText</td><td>Numeric input field, hint "Enter rating (1-10)"</td></tr>
+        <tr><td><code>submitButton</code></td><td>Button</td><td>Submits the rating to the server</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onCreate</span><span class="method-sig">(Bundle savedInstanceState)</span></div>
+    <div class="method-body"><p>Reads <code>movie_id</code> from Intent extras (sent by <code>WatchHistoryAdapter</code>). Loads <code>user_id</code> from SharedPreferences. On submit: validates field is non-empty, parses rating as int, calls <code>submitRating()</code>.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">submitRating</span><span class="method-sig">(String userId, int movieId, int rating)</span><span class="badge b-blue">Network</span></div>
+    <div class="method-body"><p>HTTP POST to <code>add_rating.php</code> with params <code>user_id</code>, <code>movie_id</code>, <code>rating</code>. On success shows Toast and calls <code>finish()</code> to return to the history list. On failure shows error Toast.</p></div>
+  </div>
+</section>
+
+<!-- 12 WatchHistoryActivity Legacy -->
+<section id="legacyact">
+  <h2><span class="snum c2">12</span> WatchHistoryActivity <span class="badge b-red">Legacy / Unused</span></h2>
+  <div class="card warn">
+    <strong>File:</strong> <code>WatchHistoryActivity.java</code> &nbsp;|&nbsp; <strong>Layout:</strong> <code>activity_watch_history.xml</code><br/>
+    <strong>Status:</strong> An older manual approach to submitting watch history. Superseded by the automatic "mark as watched" button in <code>MovieAdapter</code>. It uses a hardcoded <code>userId = 1</code> and a hardcoded date string. Not reachable from any current navigation flow — should be deleted.
+  </div>
+</section>
+
+<!-- 13 MovieItem -->
+<section id="movieitem">
+  <h2><span class="snum c2">13</span> MovieItem</h2>
+  <div class="card">
+    <strong>File:</strong> <code>MovieItem.java</code><br/>
+    <strong>Purpose:</strong> Plain Java object (POJO) representing one row from the movies table. Carries data from the JSON response to the UI.
+  </div>
+  <h4>Fields</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>movie_id</code></td><td>int</td><td>Database primary key</td></tr>
+        <tr><td><code>title</code></td><td>String</td><td>Movie title e.g. "Inception"</td></tr>
+        <tr><td><code>imageUrl</code></td><td>String</td><td>Name of the local drawable resource (not a full URL)</td></tr>
+        <tr><td><code>duration</code></td><td>String</td><td>Duration in minutes stored as text e.g. "148"</td></tr>
+        <tr><td><code>genre</code></td><td>String</td><td>Genre e.g. "Sci-Fi"</td></tr>
+        <tr><td><code>releaseYear</code></td><td>String</td><td>Year e.g. "2010"</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4>Constructor</h4>
+  <pre><code>MovieItem(int movie_id, String title, String imageUrl,
+          String duration, String genre, String releaseYear)</code></pre>
+  <h4>Key Getter Methods</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Returns</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>getMovie_id()</code></td><td>int</td><td>Database PK</td></tr>
+        <tr><td><code>getTitle()</code></td><td>String</td><td>Display title</td></tr>
+        <tr><td><code>getImageUrl()</code></td><td>String</td><td>Drawable resource name</td></tr>
+        <tr><td><code>getDuration()</code></td><td>String</td><td>Raw string</td></tr>
+        <tr><td><code>getDurationMinutes()</code></td><td>int</td><td>Parses duration string to int; returns <code>0</code> on parse failure</td></tr>
+        <tr><td><code>getGenre()</code></td><td>String</td><td>Genre label</td></tr>
+        <tr><td><code>getReleaseYear()</code></td><td>String</td><td>Year string</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 14 MovieHistoryItem -->
+<section id="historyitem">
+  <h2><span class="snum c2">14</span> MovieHistoryItem</h2>
+  <div class="card">
+    <strong>File:</strong> <code>MovieHistoryItem.java</code><br/>
+    <strong>Purpose:</strong> Represents one row from the watch history table — a movie that was watched, with its rating and date.
+  </div>
+  <h4>Fields</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>history_id</code></td><td>int</td><td>Primary key of the history record</td></tr>
+        <tr><td><code>movie_id</code></td><td>int</td><td>Foreign key referencing the movie</td></tr>
+        <tr><td><code>title</code></td><td>String</td><td>Movie title (stored alongside for quick display)</td></tr>
+        <tr><td><code>imageUrl</code></td><td>String</td><td>Drawable resource name</td></tr>
+        <tr><td><code>duration</code></td><td>String</td><td>Duration in minutes as string</td></tr>
+        <tr><td><code>genre</code></td><td>String</td><td>Genre label</td></tr>
+        <tr><td><code>releaseYear</code></td><td>String</td><td>Year string</td></tr>
+        <tr><td><code>rating</code></td><td>int</td><td>User rating 1–10; <code>0</code> = not yet rated</td></tr>
+        <tr><td><code>watchDate</code></td><td>String</td><td>Date watched in <code>YYYY-MM-DD</code> format</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4>Constructor</h4>
+  <pre><code>MovieHistoryItem(int history_id, int movie_id, String title,
+                 String imageUrl, String duration, String genre,
+                 String releaseYear, int rating, String watchDate)</code></pre>
+  <p>Getters follow the same naming convention as <code>MovieItem</code>: <code>getHistory_id()</code>, <code>getMovie_id()</code>, <code>getRating()</code>, <code>getWatchDate()</code>, etc.</p>
+</section>
+
+<!-- ══════════════════════════════════════
+     MEMBER 3
+══════════════════════════════════════ -->
+<div class="member-banner m3" id="m3-banner">
+  <div class="member-avatar">3</div>
+  <div class="member-info">
+    <h2>Member 3</h2>
+    <p>Adapters, Network &amp; Reference — RecyclerView adapters, HTTP singleton, layouts, API, and all reference material</p>
+  </div>
+  <div class="member-covers">
+    <span>Sections 15 – 23</span>
+    <span>2 Adapters · 1 Utility</span>
+    <span>API · Layouts · Issues</span>
+  </div>
+</div>
+
+<!-- 15 MovieAdapter -->
+<section id="movieadapter">
+  <h2><span class="snum c3">15</span> MovieAdapter</h2>
+  <div class="card">
+    <strong>File:</strong> <code>MovieAdapter.java</code> &nbsp;|&nbsp; <strong>Item layout:</strong> <code>movie_item.xml</code><br/>
+    <strong>Purpose:</strong> Binds the list of <code>MovieItem</code> objects to the 2-column grid in MainActivity. Each cell shows a full-height poster with gradient overlay, title, year, genre badge, and a "mark as watched" eye button.
+  </div>
+  <h3>Inner Class — MovieViewHolder</h3>
+  <p>Caches view references for one grid cell to avoid repeated <code>findViewById</code> calls:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>View field</th><th>Type</th><th>Displays</th></tr></thead>
+      <tbody>
+        <tr><td><code>titleView</code></td><td>TextView</td><td>Movie title</td></tr>
+        <tr><td><code>posterView</code></td><td>ImageView</td><td>Movie poster (loaded via Glide)</td></tr>
+        <tr><td><code>genreView</code></td><td>TextView</td><td>Genre badge</td></tr>
+        <tr><td><code>yearView</code></td><td>TextView</td><td>Release year</td></tr>
+        <tr><td><code>markAsWatchedButton</code></td><td>ImageButton</td><td>Eye icon — tap to log as watched</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onCreateViewHolder</span><span class="method-sig">(ViewGroup parent, int viewType) → MovieViewHolder</span><span class="badge b-blue">RecyclerView</span></div>
+    <div class="method-body"><p>Called when RecyclerView needs a brand-new cell. Inflates <code>movie_item.xml</code> and returns it wrapped in a <code>MovieViewHolder</code>.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onBindViewHolder</span><span class="method-sig">(MovieViewHolder holder, int position)</span><span class="badge b-blue">RecyclerView</span></div>
+    <div class="method-body"><p>Called to fill data into an existing cell. Gets the <code>MovieItem</code> at <code>position</code>. Sets title, genre, year. Calls <code>getResId()</code> to get the drawable resource ID, then loads the poster via <strong>Glide</strong> with a placeholder fallback. Sets a click listener on <code>markAsWatchedButton</code> → <code>markMovieAsWatched(movie)</code>.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">getResId</span><span class="method-sig">(String name) → int</span><span class="badge b-yellow">Utility</span></div>
+    <div class="method-body">
+      <p>Converts a movie name to an Android drawable resource ID. Steps:</p>
+      <ol>
+        <li>Lowercase the string.</li>
+        <li>Replace spaces, hyphens, colons, apostrophes → underscores.</li>
+        <li>Special case: <code>"schindler's list"</code> → <code>"schindler_s_list"</code>.</li>
+        <li>Calls <code>context.getResources().getIdentifier(name, "drawable", packageName)</code>.</li>
+      </ol>
+      <div class="card warn">If a movie's title doesn't cleanly transform to a matching filename in <code>res/drawable/</code>, the poster silently falls back to the placeholder image.</div>
+    </div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">markMovieAsWatched</span><span class="method-sig">(MovieItem movie)</span><span class="badge b-blue">Network</span></div>
+    <div class="method-body">
+      <p>Triggered when the user taps the eye button. Gets today's date as <code>YYYY-MM-DD</code>. HTTP POST to <code>add_watch_history.php</code> via VolleySingleton with:</p>
+      <ul>
+        <li><code>user_id</code> — from SharedPreferences</li>
+        <li><code>movie_id</code> — from MovieItem</li>
+        <li><code>watch_date</code> — today's date</li>
+        <li><code>minutes_watched</code> — from <code>movie.getDurationMinutes()</code></li>
+      </ul>
+      <p>Shows success or error Toast.</p>
+    </div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">getItemCount</span><span class="method-sig">() → int</span></div>
+    <div class="method-body"><p>Returns the total number of movies. RecyclerView calls this to know how many cells to create.</p></div>
+  </div>
+</section>
+
+<!-- 16 WatchHistoryAdapter -->
+<section id="historyadapter">
+  <h2><span class="snum c3">16</span> WatchHistoryAdapter</h2>
+  <div class="card">
+    <strong>File:</strong> <code>WatchHistoryAdapter.java</code> &nbsp;|&nbsp; <strong>Item layout:</strong> <code>history_movie_item.xml</code><br/>
+    <strong>Purpose:</strong> Binds <code>MovieHistoryItem</code> objects to the vertical list in WatchHistoryListActivity. Each row shows thumbnail, title, date, rating, duration, and a delete button.
+  </div>
+  <h3>Inner Class — HistoryViewHolder</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>View field</th><th>Type</th><th>Displays</th></tr></thead>
+      <tbody>
+        <tr><td><code>movieImageView</code></td><td>ImageView</td><td>Thumbnail poster</td></tr>
+        <tr><td><code>movieTitleTextView</code></td><td>TextView</td><td>Movie title</td></tr>
+        <tr><td><code>movieDurationTextView</code></td><td>TextView</td><td>Duration in minutes</td></tr>
+        <tr><td><code>ratingTextView</code></td><td>TextView</td><td>User's rating or "Not Rated"</td></tr>
+        <tr><td><code>watchDateTextView</code></td><td>TextView</td><td>Watch date</td></tr>
+        <tr><td><code>deleteBtn</code></td><td>ImageButton</td><td>Trash icon — removes entry</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onCreateViewHolder</span><span class="method-sig">(ViewGroup parent, int viewType) → HistoryViewHolder</span></div>
+    <div class="method-body"><p>Inflates <code>history_movie_item.xml</code> and returns a new <code>HistoryViewHolder</code>.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">onBindViewHolder</span><span class="method-sig">(HistoryViewHolder holder, int position)</span></div>
+    <div class="method-body">
+      <p>Fills all text views. Smart image loading: if <code>imageUrl</code> starts with <code>"http"</code> it loads from network via Glide; otherwise resolves to a local drawable via <code>getResId()</code>.</p>
+      <p><strong>Item tap:</strong> starts <code>RateMovieActivity</code> passing <code>movie_id</code> as Intent extra.</p>
+      <p><strong>Delete button tap:</strong> calls <code>deleteHistoryItem(item, position)</code>.</p>
+    </div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">getResId</span><span class="method-sig">(String name) → int</span><span class="badge b-yellow">Utility</span></div>
+    <div class="method-body"><p>Identical logic to <code>MovieAdapter.getResId()</code> — resolves a name string to a local drawable resource ID.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">deleteHistoryItem</span><span class="method-sig">(MovieHistoryItem item, int position)</span><span class="badge b-blue">Network</span><span class="badge b-red">Destructive</span></div>
+    <div class="method-body">
+      <p>HTTP POST to <code>delete_history.php</code> with <code>history_id</code>. On success:</p>
+      <ol>
+        <li>Removes item from the backing <code>ArrayList</code> at <code>position</code>.</li>
+        <li>Calls <code>notifyItemRemoved(position)</code> for an animated removal.</li>
+        <li>Calls <code>notifyItemRangeChanged(position, itemCount)</code> to re-index remaining items.</li>
+      </ol>
+      <p>Shows Toast on success or failure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 17 VolleySingleton -->
+<section id="volley">
+  <h2><span class="snum c3">17</span> VolleySingleton</h2>
+  <div class="card">
+    <strong>File:</strong> <code>VolleySingleton.java</code> &nbsp;|&nbsp; <strong>Pattern:</strong> Singleton<br/>
+    <strong>Purpose:</strong> One shared Volley <code>RequestQueue</code> for the whole app, plus automatic HTTP cookie/session management.
+  </div>
+  <h4>Fields</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>instance</code></td><td>VolleySingleton (static)</td><td>The one and only instance</td></tr>
+        <tr><td><code>requestQueue</code></td><td>RequestQueue</td><td>The shared HTTP request queue</td></tr>
+        <tr><td><code>ctx</code></td><td>Context (static)</td><td>Application context — avoids Activity memory leaks</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">VolleySingleton</span><span class="method-sig">(Context context)</span><span class="badge b-gray">Private constructor</span></div>
+    <div class="method-body"><p>Private — no outside code can call <code>new VolleySingleton()</code>. Creates a <code>CookieManager</code> with <code>CookiePolicy.ACCEPT_ALL</code> and registers it as the system default <code>CookieHandler</code>. Every Volley request will automatically send and receive PHP session cookies without any extra code in each Activity.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">getInstance</span><span class="method-sig">(Context context) → VolleySingleton</span><span class="badge b-green">Static / Thread-safe</span></div>
+    <div class="method-body"><p>The only entry point. Uses a <code>synchronized</code> block to prevent two threads from simultaneously creating two instances. Always passes <code>context.getApplicationContext()</code> to avoid leaking an Activity reference.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">getRequestQueue</span><span class="method-sig">() → RequestQueue</span></div>
+    <div class="method-body"><p>Lazy initialization — creates the queue on first call and returns the same one every subsequent call.</p></div>
+  </div>
+  <div class="method">
+    <div class="method-header"><span class="method-name">addToRequestQueue</span><span class="method-sig">&lt;T&gt; (Request&lt;T&gt; req)</span><span class="badge b-blue">Generic</span></div>
+    <div class="method-body"><p>Adds any Volley request to the shared queue. Used by activities as: <code>VolleySingleton.getInstance(ctx).addToRequestQueue(myRequest)</code>.</p></div>
+  </div>
+  <div class="card hi"><strong>Why a Singleton?</strong> Creating a new <code>RequestQueue</code> each time wastes threads and memory and breaks the disk cache. A singleton ensures one managed, reusable queue for the app's lifetime.</div>
+</section>
+
+<!-- 18 Layouts -->
+<section id="layouts">
+  <h2><span class="snum c3">18</span> Layout Files</h2>
+  <p>All XML files live in <code>app/src/main/res/layout/</code>. They define visual structure only — zero business logic.</p>
+
+  <div class="card warn" style="margin-bottom:18px;">
+    <strong>Layout types used:</strong> The app uses a mix of <code>LinearLayout</code> and <code>RelativeLayout</code> as root containers.
+    Simple form screens (Login, SignUp, etc.) use <strong>LinearLayout</strong> — stacks views vertically in one column.
+    The three main tab screens use <strong>RelativeLayout</strong> — needed to pin the bottom navigation bar to the bottom while content fills the space above.
+    <code>LinearLayout</code> also appears heavily <em>inside</em> almost every file to group rows of elements.
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>File</th><th>Used By</th><th>Root Layout</th><th>Key Components</th></tr></thead>
+      <tbody>
+        <tr><td><code>activity_splash.xml</code></td><td>SplashActivity</td><td><span class="badge b-purple">RelativeLayout</span></td><td>App logo ImageView, ProgressBar (inside LinearLayout child)</td></tr>
+        <tr><td><code>activity_login.xml</code></td><td>LoginActivity</td><td><span class="badge b-blue">LinearLayout</span></td><td>Username + password EditTexts, Login Button, Signup link</td></tr>
+        <tr><td><code>activity_sign_up.xml</code></td><td>SignUpActivity</td><td><span class="badge b-blue">LinearLayout</span></td><td>Username + password EditTexts, Signup Button</td></tr>
+        <tr><td><code>activity_main.xml</code></td><td>MainActivity</td><td><span class="badge b-purple">RelativeLayout</span></td><td>Toolbar LinearLayout (welcome + profile icon), RecyclerView, BottomNavigationView pinned to bottom</td></tr>
+        <tr><td><code>activity_home.xml</code></td><td>HomeActivity</td><td><span class="badge b-purple">RelativeLayout</span></td><td>Toolbar LinearLayout, nested LinearLayouts for 3 stat cards (watch time / movie count / rank), BottomNavigationView</td></tr>
+        <tr><td><code>activity_watch_history_list.xml</code></td><td>WatchHistoryListActivity</td><td><span class="badge b-purple">RelativeLayout</span></td><td>Toolbar LinearLayout, RecyclerView (vertical list), BottomNavigationView pinned to bottom</td></tr>
+        <tr><td><code>activity_rate_movie.xml</code></td><td>RateMovieActivity</td><td><span class="badge b-blue">LinearLayout</span></td><td>Large numeric EditText (hint: 0–10), Submit button (inner LinearLayout for button row)</td></tr>
+        <tr><td><code>activity_change_password.xml</code></td><td>ChangePasswordActivity</td><td><span class="badge b-blue">LinearLayout</span></td><td>Old password EditText, New password EditText, Update button</td></tr>
+        <tr><td><code>activity_watch_history.xml</code></td><td>WatchHistoryActivity (legacy)</td><td><span class="badge b-blue">LinearLayout</span></td><td>Minutes input, Rating input, Submit button (inner LinearLayout for button row)</td></tr>
+        <tr><td><code>movie_item.xml</code></td><td>MovieAdapter</td><td>CardView → <span class="badge b-purple">RelativeLayout</span></td><td>Full-height poster ImageView, gradient overlay, nested LinearLayouts for title / year / genre badge, eye ImageButton</td></tr>
+        <tr><td><code>history_movie_item.xml</code></td><td>WatchHistoryAdapter</td><td>CardView → <span class="badge b-blue">LinearLayout</span></td><td>Thumbnail ImageView, nested LinearLayouts for title / date / star+rating / duration, trash ImageButton</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 19 API -->
+<section id="api">
+  <h2><span class="snum c3">19</span> API Endpoints</h2>
+  <p>Base URL: <code>http://10.0.2.2/MovieMateAPI/</code> (Android Emulator → host localhost)</p>
+
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag POST">POST</span><span class="eurl">login_user.php</span><span class="badge b-yellow">LoginActivity</span></div>
+    <strong>Params:</strong> <code>username</code>, <code>password</code><br/>
+    <strong>Response:</strong> <code>{ "status": "success", "user_id": 3, "message": "..." }</code>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag POST">POST</span><span class="eurl">register_user.php</span><span class="badge b-yellow">SignUpActivity</span></div>
+    <strong>Params:</strong> <code>username</code>, <code>password</code><br/>
+    <strong>Response:</strong> <code>{ "status": "success"/"error", "message": "..." }</code>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag GET">GET</span><span class="eurl">get_movies.php</span><span class="badge b-yellow">MainActivity</span></div>
+    <strong>Params:</strong> none<br/>
+    <strong>Response:</strong> JSON array of <code>{ "movie_id", "title", "duration_minutes", "genre", "release_year", "image_url" }</code>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag GET">GET</span><span class="eurl">get_user_history.php?user_id=[id]</span><span class="badge b-yellow">HomeActivity</span><span class="badge b-yellow">WatchHistoryListActivity</span></div>
+    <strong>Params:</strong> <code>user_id</code> (query string)<br/>
+    <strong>Response:</strong> JSON array of <code>{ "history_id", "movie_id", "title", "duration_minutes", "genre", "release_year", "image_url", "rating", "watch_date" }</code>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag POST">POST</span><span class="eurl">add_watch_history.php</span><span class="badge b-yellow">MovieAdapter</span></div>
+    <strong>Params:</strong> <code>user_id</code>, <code>movie_id</code>, <code>watch_date</code>, <code>minutes_watched</code><br/>
+    <strong>Response:</strong> plain text "success" or error string
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag POST">POST</span><span class="eurl">add_rating.php</span><span class="badge b-yellow">RateMovieActivity</span></div>
+    <strong>Params:</strong> <code>user_id</code>, <code>movie_id</code>, <code>rating</code><br/>
+    <strong>Response:</strong> plain text "success" or error
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag POST">POST</span><span class="eurl">delete_history.php</span><span class="badge b-yellow">WatchHistoryAdapter</span></div>
+    <strong>Params:</strong> <code>history_id</code><br/>
+    <strong>Response:</strong> plain text "success" or error
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-top"><span class="mtag POST">POST</span><span class="eurl">change_password.php</span><span class="badge b-yellow">ChangePasswordActivity</span></div>
+    <strong>Params:</strong> <code>username</code>, <code>old_password</code>, <code>new_password</code><br/>
+    <strong>Response:</strong> plain text containing "success" or error message
+  </div>
+</section>
+
+<!-- 20 Colors -->
+<section id="colors">
+  <h2><span class="snum c3">20</span> Colors &amp; Theme</h2>
+  <p>Defined in <code>res/values/colors.xml</code>. Full dark mode throughout.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Name</th><th>Hex</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><code>background</code></td><td><span style="display:inline-block;width:14px;height:14px;background:#0F172A;border:1px solid #555;border-radius:3px;vertical-align:middle;margin-right:6px;"></span>#0F172A</td><td>App background (dark blue-black)</td></tr>
+        <tr><td><code>surface</code></td><td><span style="display:inline-block;width:14px;height:14px;background:#1E293B;border:1px solid #555;border-radius:3px;vertical-align:middle;margin-right:6px;"></span>#1E293B</td><td>Cards, bottom nav background</td></tr>
+        <tr><td><code>primary</code> / <code>accent</code></td><td><span style="display:inline-block;width:14px;height:14px;background:#3B82F6;border:1px solid #555;border-radius:3px;vertical-align:middle;margin-right:6px;"></span>#3B82F6</td><td>Buttons, active tab, badges</td></tr>
+        <tr><td><code>text_primary</code></td><td><span style="display:inline-block;width:14px;height:14px;background:#F8FAFC;border:1px solid #555;border-radius:3px;vertical-align:middle;margin-right:6px;"></span>#F8FAFC</td><td>Main body text and titles</td></tr>
+        <tr><td><code>text_secondary</code></td><td><span style="display:inline-block;width:14px;height:14px;background:#94A3B8;border:1px solid #555;border-radius:3px;vertical-align:middle;margin-right:6px;"></span>#94A3B8</td><td>Subtitles, meta text, placeholders</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4>Drawable Assets</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>ic_eye.xml</code></td><td>Eye icon — "Mark as Watched" button</td></tr>
+        <tr><td><code>ic_star.xml</code></td><td>Star icon for rating display</td></tr>
+        <tr><td><code>gradient_overlay.xml</code></td><td>Dark gradient over movie poster cards</td></tr>
+        <tr><td><code>edit_text_bg.xml</code></td><td>Custom EditText background with rounded border</td></tr>
+        <tr><td><code>placeholder_image</code></td><td>Default image when poster fails to load</td></tr>
+        <tr><td><code>moviemate_logo_start</code></td><td>Branding logo on the splash screen</td></tr>
+        <tr><td><code>icon_profile</code></td><td>Profile icon in the toolbar</td></tr>
+        <tr><td><code>ic_launcher_foreground/background.xml</code></td><td>App icon layers</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 21 User Flow -->
+<section id="userflow">
+  <h2><span class="snum c3">21</span> User Journey</h2>
+  <h3>App Launch</h3>
+  <div class="flow">
+    <div class="fbox b">SplashActivity<br/><small>5 sec</small></div>
+    <div class="farr">→</div>
+    <div class="fbox">LoginActivity</div>
+    <div class="farr">→</div>
+    <div class="fbox g">MainActivity<br/><small>Movies Grid</small></div>
+  </div>
+  <p>New users tap "Sign Up" → SignUpActivity → back to LoginActivity.</p>
+  <h3>Bottom Tab Navigation</h3>
+  <div class="flow" style="align-items:flex-start;">
+    <div class="fbox" style="min-width:120px;"><strong>Home Tab</strong><br/>HomeActivity<br/><small>Stats</small></div>
+    <div class="farr" style="margin-top:16px;">|</div>
+    <div class="fbox b" style="min-width:120px;"><strong>Movies Tab</strong><br/>MainActivity<br/><small>Grid</small></div>
+    <div class="farr" style="margin-top:16px;">|</div>
+    <div class="fbox" style="min-width:120px;"><strong>History Tab</strong><br/>WatchHistoryListActivity<br/><small>List</small></div>
+  </div>
+  <h3>Feature Flows</h3>
+  <div class="card" style="margin-bottom:10px;"><strong>Mark Watched:</strong> Grid → tap eye icon → <code>markMovieAsWatched()</code> → POST → Toast</div>
+  <div class="card" style="margin-bottom:10px;"><strong>Rate Movie:</strong> History list → tap card → RateMovieActivity → enter 1–10 → POST → back</div>
+  <div class="card" style="margin-bottom:10px;"><strong>Delete Entry:</strong> History list → tap trash → <code>deleteHistoryItem()</code> → POST → animated removal</div>
+  <div class="card" style="margin-bottom:10px;"><strong>Change Password:</strong> Profile icon → "Change Password" → ChangePasswordActivity → old + new → POST → finish</div>
+  <div class="card" style="margin-bottom:10px;"><strong>Logout:</strong> Profile icon → "Logout" → SharedPreferences cleared → LoginActivity (back stack wiped)</div>
+</section>
+
+<!-- 22 Session -->
+<section id="session">
+  <h2><span class="snum c3">22</span> Session Management</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Mechanism</th><th>Stores</th><th>Where / Lifetime</th></tr></thead>
+      <tbody>
+        <tr><td>SharedPreferences <code>"MovieMatePrefs"</code></td><td><code>username</code> (String), <code>user_id</code> (String)</td><td>Device local storage — survives app restarts until logout</td></tr>
+        <tr><td>VolleySingleton CookieManager</td><td>PHP session cookies (<code>PHPSESSID</code>)</td><td>In-memory — auto-sent with every Volley request, cleared on app kill</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Logout</strong> clears all SharedPreferences keys and starts <code>LoginActivity</code> with <code>FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK</code> — destroys the entire back stack so pressing Back cannot reach a protected screen.</p>
+</section>
+
+<!-- 23 Known Issues -->
+<section id="issues">
+  <h2><span class="snum c3">23</span> Known Issues &amp; Limitations</h2>
+  <div class="card bad"><strong>1. HTTP only — no HTTPS.</strong> Passwords and session tokens travel in plain text. Must switch to HTTPS before any real deployment.</div>
+  <div class="card warn"><strong>2. Hardcoded emulator host.</strong> All URLs use <code>http://10.0.2.2/</code>. Will not work on a physical device or remote server. Needs a config variable.</div>
+  <div class="card warn"><strong>3. Legacy WatchHistoryActivity.</strong> Dead code with hardcoded userId = 1 and date. Should be deleted.</div>
+  <div class="card warn"><strong>4. Brittle poster image loading.</strong> Poster filenames are guessed by transforming the movie title. Any mismatch silently shows the placeholder.</div>
+  <div class="card warn"><strong>5. Minimal input validation.</strong> Password strength, username format, and rating range (1–10) are not enforced on the client side.</div>
+  <div class="card warn"><strong>6. No offline handling.</strong> No connectivity checks — all failures surface only as Volley error Toasts with no retry.</div>
+  <div class="card warn"><strong>7. SignUpActivity inconsistency.</strong> Creates its own RequestQueue instead of using VolleySingleton like every other screen.</div>
+  <div class="card warn"><strong>8. No automated tests.</strong> Only auto-generated placeholder test files exist. All testing is currently manual.</div>
+</section>
+
+<!-- 23b Dependencies -->
+<section id="deps">
+  <h2><span class="snum c3">24</span> Dependencies &amp; Build</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Library</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>androidx.appcompat</code></td><td>Backward-compatible Activity base and UI components</td></tr>
+        <tr><td><code>com.google.android.material</code></td><td>Material Design — BottomNavigationView, card styling</td></tr>
+        <tr><td><code>androidx.recyclerview:1.3.0</code></td><td>Efficient scrollable lists and grids</td></tr>
+        <tr><td><code>androidx.cardview:1.0.0</code></td><td>Card containers with elevation and rounded corners</td></tr>
+        <tr><td><code>com.android.volley</code></td><td>HTTP networking — GET/POST, JSON, request queue</td></tr>
+        <tr><td><code>com.github.bumptech.glide</code></td><td>Image loading and caching (movie posters)</td></tr>
+        <tr><td><code>junit 4.x</code></td><td>Unit testing framework</td></tr>
+        <tr><td><code>androidx.test.espresso</code></td><td>UI instrumentation testing</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4>Build Settings</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Minimum SDK</td><td>24 (Android 7.0 Nougat)</td></tr>
+        <tr><td>Target SDK</td><td>36 (Android 15)</td></tr>
+        <tr><td>Compile SDK</td><td>36</td></tr>
+        <tr><td>Java compatibility</td><td>Java 11</td></tr>
+        <tr><td>Build scripts</td><td>Kotlin DSL (.gradle.kts)</td></tr>
+        <tr><td>ProGuard / minification</td><td>Disabled in release (can be enabled)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4>Required Permissions (AndroidManifest.xml)</h4>
+  <ul>
+    <li><code>android.permission.INTERNET</code> — required for all API calls</li>
+    <li><code>android.permission.ACCESS_NETWORK_STATE</code> — check connectivity</li>
+  </ul>
+</section>
+
+<!-- Footer -->
+<div style="margin-top:60px;padding:26px 0;border-top:1px solid var(--border);color:var(--muted);font-size:0.8rem;text-align:center;">
+  MovieMate · Group Project Documentation · 2026 · Android / Java / Volley / Glide / PHP
+</div>
+
+</main>
+
+<script>
+  const all = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('#sidebar nav a');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const m = document.querySelector('#sidebar nav a[href="#'+e.target.id+'"]');
+        if (m) m.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-38% 0px -57% 0px' });
+  all.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
